@@ -1,0 +1,8 @@
+- kivy
+- reportlab
+- tensorflow
+- tflite_runtime
+- os
+- cv2
+- numpy
+- matplotlib

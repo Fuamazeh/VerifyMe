@@ -1,0 +1,352 @@
+#:import Factory kivy.factory.Factory
+#:import Clock kivy.clock.Clock
+
+<courseCode@Popup>:
+    title: "Enter Course Code"
+    size_hint: (0.6, 0.4)
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+        TextInput:
+            id: course_code
+            multiline: False
+            hint_text: "e.g: CEC412"
+            font_size: 18
+            padding: [10, 10]
+        Button:
+            text: "Submit"
+            on_release: app.verify_course_code(course_code.text, root)
+
+<invalidCourse@Popup>
+    auto_dismiss: True
+    title: 'Notification'
+    size_hint: 0.6, 0.2
+    pos_hint: {'x':.2,'y':.5}
+    on_open: Clock.schedule_once(lambda dt: self.dismiss(), 1)
+    Label:
+        text: 'Not a valid course code'
+        font_size: 18
+
+<incompleteFees@Popup>
+    auto_dismiss: True
+    title: 'Notification'
+    size_hint: 0.6, 0.2
+    pos_hint: {'x':.2,'y':.5}
+    on_open: Clock.schedule_once(lambda dt: self.dismiss(), 1)
+
+    Label:
+        text: 'Rejected: Incompleted school fees'
+        font_size: 18
+
+<unidentified@Popup>
+    auto_dismiss: True
+    title: 'Notification'
+    size_hint: 0.6, 0.2
+    pos_hint: {'x':.2,'y':.5}
+    on_open: Clock.schedule_once(lambda dt: self.dismiss(), 1)
+
+    Label:
+        text: 'Rejected: Unidentified'
+        font_size: 18
+
+<notRegistered@Popup>
+    auto_dismiss: True
+    title: 'Notification'
+    size_hint: 0.6, 0.2
+    pos_hint: {'x':.2,'y':.5}
+    on_open: Clock.schedule_once(lambda dt: self.dismiss(), 1)
+
+    Label:
+        text: 'Rejected: Course not registered'
+        font_size: 18
+
+<coveredCamera@Popup>
+    auto_dismiss: True
+    title: 'Notification'
+    size_hint: 0.6, 0.2
+    pos_hint: {'x':.2,'y':.5}
+    on_open: Clock.schedule_once(lambda dt: self.dismiss(), 1)
+
+    Label:
+        text: 'Camera might be covered or poor lightning'
+        font_size: 18
+
+<alreadyVerified@Popup>
+    auto_dismiss: True
+    title: 'Notification'
+    size_hint: 0.6, 0.2
+    pos_hint: {'x':.2,'y':.5}
+    on_open: Clock.schedule_once(lambda dt: self.dismiss(), 1)
+
+    Label:
+        text: 'Student is Already Verified'
+        font_size: 18
+
+<clearedAttendance@Popup>
+    auto_dismiss: True
+    title: 'Notification'
+    size_hint: 0.6, 0.2
+    pos_hint: {'x':.2,'y':.5}
+    on_open: Clock.schedule_once(lambda dt: self.dismiss(), 1)
+
+    Label:
+        text: 'Attendance Cleared'
+        font_size: 18
+
+<emptyList@Popup>
+    auto_dismiss: True
+    title: 'Notification'
+    size_hint: 0.6, 0.2
+    pos_hint: {'x':.2,'y':.5}
+    on_open: Clock.schedule_once(lambda dt: self.dismiss(), 1)
+
+    Label:
+        text: 'Attendance is Empty'
+        font_size: 18
+
+<savedSuccessfully@Popup>
+    auto_dismiss: True
+    title: 'Notification'
+    size_hint: 0.6, 0.2
+    pos_hint: {'x':.2,'y':.5}
+    on_open: Clock.schedule_once(lambda dt: self.dismiss(), 1)
+
+    Label:
+        text: 'Saved Successfully'
+        font_size: 18
+
+<errorSaving@Popup>
+    auto_dismiss: True
+    title: 'Notification'
+    size_hint: 0.6, 0.2
+    pos_hint: {'x':.2,'y':.5}
+    on_open: Clock.schedule_once(lambda dt: self.dismiss(), 1)
+
+    Label:
+        text: 'Error Saving Attendance'
+        font_size: 18
+
+<exportAttendance@Popup>:
+    title: "Export Attendance"
+    size_hint: (0.6, 0.4)
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 10
+        spacing: 10
+        Label:
+            text: "Save attendance as PDF ?"
+        BoxLayout:
+            size_hint_y: None
+            height: '48dp'
+            spacing: 10
+            Button:
+                text: "Cancel"
+                on_release: root.dismiss()
+            Button:
+                text: "Confirm & Save"
+                background_color: (0.2, 0.7, 0.2, 1)
+                on_release:
+                    app.root.get_screen('dashboard').generate_pdf_report()
+                    root.dismiss()
+
+WindowManager:
+    HomeScreen:
+    Dashboard:
+
+<HomeScreen>
+    name: 'home'
+
+    GridLayout:
+        cols: 2
+        rows: 1
+        padding: 10
+        size_hint: (1, 1)
+
+        GridLayout:
+            cols: 1
+            rows: 2
+
+            AnchorLayout:
+                anchor_x: 'center'
+                anchor_y: 'center'
+                padding: 20
+                
+                Camera:
+                    id: camera
+                    resolution: (640, 480)
+                    play: True
+                    fit_mode: 'contain'
+                    allow_stretch: True
+                    keep_ratio: True
+
+                Widget:
+                    id: face_guide
+                    size_hint: (None, None)
+                    size: (200, 200)
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+                    canvas.after:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Line:
+                            width: 2
+                            rectangle: (self.x, self.y, self.width, self.height)
+                
+            Button:
+                text: 'Verify Student'
+                size_hint_y: None
+                height: '48dp'
+                on_press: root.capture()
+
+        GridLayout:
+            cols: 1
+            rows: 2
+
+            BoxLayout:
+                orientation: 'vertical'
+                padding: [20, 0, 20, 0]
+
+                GridLayout:
+                    cols: 1
+                    height: self.minimum_height
+                    padding: [0, 120, 0, 0]
+
+                    Label:
+                        id: display_name
+                        text: 'Name: '
+                        font_size: 16
+                        size_hint_y: None
+                        height: '48dp'
+                        text_size: self.size
+                        halign: 'left'
+
+                    Label:
+                        id: display_matricule
+                        text: 'Matricule: '
+                        font_size: 16
+                        size_hint_y: None
+                        height: '48dp'
+                        text_size: self.size
+                        halign: 'left'
+
+                    Label:
+                        id: fee_status
+                        text: 'Fee Status: '
+                        font_size: 16
+                        size_hint_y: None
+                        height: '48dp'
+                        text_size: self.size
+                        halign: 'left'
+
+                    Label:
+                        id: course_status
+                        text: 'Course Status: '
+                        font_size: 16
+                        size_hint_y: None
+                        height: '48dp'
+                        text_size: self.size
+                        halign: 'left'
+
+                Label:
+                    text: '[b]Tips[/b] \n1. Take off hats, sunglasses or masks\n2. Use good lightning, natural light works best\n3. Make sure your face fits in the frame'
+                    markup: True
+                    font_size: 16
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'middle'
+
+            Button:
+                text: 'Dashboard'
+                size_hint_y: None
+                height: '48dp'
+                on_release:
+                    app.root.current = 'dashboard'
+                    root.manager.transition.direction = 'left'
+
+
+<Dashboard>:
+    name: 'dashboard'
+
+    GridLayout:
+        cols: 1
+        padding: 10
+        size: root.width, root.height
+
+        GridLayout:
+            cols: 2
+            size_hint_y: None
+
+            AnchorLayout:
+                anchor_x: 'left'
+                anchor_y: 'top'
+
+                Button:
+                    text: 'Back'
+                    size_hint: (None, None)
+                    height: '48dp'
+                    width: '100dp'
+                    on_release:
+                        app.root.current = 'home'
+                        root.manager.transition.direction = 'right'
+
+            AnchorLayout:
+                anchor_x: 'right'
+                anchor_y: 'top'
+
+                Button:
+                    text: 'Export Attendance'
+                    size_hint: (None, None)
+                    height: '48dp'
+                    width: '180dp'
+                    on_release: Factory.exportAttendance().open()
+
+        GridLayout:
+            cols: 3
+            size_hint_y: None
+            height: '48dp'
+            padding: [10, 0, 10, 0]
+
+            Label:
+                text: 'NAME'
+                text_size: self.size
+                size_hint_x: 0.5
+                bold: True
+                halign: 'left'
+
+            Label:
+                text: 'MATRICULE'
+                text_size: self.size
+                size_hint_x: 0.25
+                halign: 'center'
+                bold: True
+
+            Label:
+                text: 'TIME STAMP'
+                text_size: self.size
+                size_hint_x: 0.25
+                halign: 'right'
+                bold: True
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            size_hint: (1, 1)
+
+            GridLayout:
+                id: attendance_list
+                cols: 3
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: [0, 5]
+                padding: [10, 0, 10, 0]
+
+        BoxLayout:
+            size_hint_y: None
+            height: '48dp'
+            padding: [10, 0, 10, 0]
+            spacing: 5
+
+            Button:
+                text: 'Clear Attendance'
+                on_press: root.clear_attendance()
