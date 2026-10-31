@@ -1,0 +1,1 @@
+The captured images using capture.py are stored here, remember to save the images using the matricule as names.
